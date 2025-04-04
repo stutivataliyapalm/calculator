@@ -51,64 +51,101 @@ const CircleCalculator = () => {
 
     return (
         <CalculatorLayout>
-        <div className=" w-80 p-4 bg-white  rounded-lg shadow-md">
-            <h1 className="text-2xl font-bold  ">Circle Calculator
-            <button
-            onClick={() => setIsModalOpen(true)}
-            className="ml-2 text-red-500 hover:text-red-700"
-          >
-            <Info className="w-5 h-5" />
-          </button>   
-            </h1>
-            <p className="mb-4 text-gray-600">Please provide any value below to calculate the remaining values of a circle.</p>
-            <div className=" p-6 ">
-                <div className="mb-4">
-                    <label className="block mb-1 font-medium text-gray-700">Radius (R)</label>
-                    <input type="number" value={radius} onChange={(e) => setRadius(e.target.value)}
-                        className="w-full p-2 border rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-blue-500" placeholder="" />
-                </div>
-                <div className="mb-4">
-                    <label className="block mb-1 font-medium text-gray-700">Diameter (D)</label>
-                    <input type="number" value={diameter} onChange={(e) => setDiameter(e.target.value)}
-                        className="w-full p-2 border rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-blue-500" placeholder="" />
-                </div>
-                <div className="mb-4">
-                    <label className="block mb-1 font-medium text-gray-700">Circumference (C)</label>
-                    <input type="number" value={circumference} onChange={(e) => setCircumference(e.target.value)}
-                        className="w-full p-2 border rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-blue-500" placeholder="" />
-                </div>
-                <div className="mb-4">
-                    <label className="block mb-1 font-medium text-gray-700">Area (A)</label>
-                    <input type="number" value={area} onChange={(e) => setArea(e.target.value)}
-                        className="w-full p-2 border rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-blue-500" placeholder="" />
-                </div>
-                <div className="flex gap-4 justify-center">
-                    <button onClick={calculateCircle} className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 flex-1 rounded-md transition-colors">
-                        Calculate
+            <div className="w-full max-w-sm mr-60 bg-white rounded-lg shadow-md p-3 sm:p-4">
+                <div className="flex items-center justify-between mb-2">
+                    <h1 className="text-base sm:text-lg font-bold text-gray-800">Circle Calculator</h1>
+                    <button
+                        onClick={() => setIsModalOpen(true)}
+                        className="text-red-500 hover:text-red-400"
+                    >
+                        <Info className="w-4 h-4" />
                     </button>
-                    <button onClick={clearFields} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 flex-1 rounded-md transition-colors">
-                        Clear
-                    </button>
+                </div>
+                <p className="mb-2 text-gray-600 text-xs">Calculate area, circumference, and other properties of a circle.</p>
+                <div className="space-y-4">
+                    <div className="mb-4">
+                        <label className="block mb-2 font-medium text-gray-700">Radius (R)</label>
+                        <input 
+                            type="number" 
+                            value={radius} 
+                            onChange={(e) => setRadius(e.target.value)}
+                            className="w-full p-3 border rounded-lg outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-blue-500 text-base" 
+                            placeholder="Enter radius" 
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block mb-2 font-medium text-gray-700">Diameter (D)</label>
+                        <input 
+                            type="number" 
+                            value={diameter} 
+                            onChange={(e) => setDiameter(e.target.value)}
+                            className="w-full p-3 border rounded-lg outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-blue-500 text-base" 
+                            placeholder="Enter diameter" 
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block mb-2 font-medium text-gray-700">Circumference (C)</label>
+                        <input 
+                            type="number" 
+                            value={circumference} 
+                            onChange={(e) => setCircumference(e.target.value)}
+                            className="w-full p-3 border rounded-lg outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-blue-500 text-base" 
+                            placeholder="Enter circumference" 
+                        />
+                    </div>
+                    <div className="mb-6">
+                        <label className="block mb-2 font-medium text-gray-700">Area (A)</label>
+                        <input 
+                            type="number" 
+                            value={area} 
+                            onChange={(e) => setArea(e.target.value)}
+                            className="w-full p-3 border rounded-lg outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-blue-500 text-base" 
+                            placeholder="Enter area" 
+                        />
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-4">
+                        <button 
+                            onClick={calculateCircle} 
+                            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors"
+                        >
+                            Calculate
+                        </button>
+                        <button 
+                            onClick={clearFields} 
+                            className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md transition-colors"
+                        >
+                            Clear
+                        </button>
+                    </div>
                 </div>
             </div>
-            <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)} className="relative z-50">
-          <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
-          <div className="fixed inset-0 flex items-center justify-center p-4">
-            <Dialog.Panel className="bg-white rounded-lg p-6 max-w-sm w-full">
-              <Dialog.Title className="text-lg font-semibold mb-2">How to Use Circle Calculator</Dialog.Title>
-              <ul className="list-disc pl-5 space-y-2">
-              The Circle Calculator allows you to calculate properties of a circle, such as area, circumference, diameter, and radius. Simply enter the radius or diameter, and the calculator will provide you with the accurate results. This tool is perfect for geometry, construction, design, and everyday use where circular measurements are needed.
-              </ul>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md"
-              >
-                Close
-              </button>
-            </Dialog.Panel>
-          </div>
-        </Dialog>
-        </div>
+
+            <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+                <div className="fixed inset-0 bg-black/30" />
+                <div className="fixed inset-0 flex items-center justify-center p-4">
+                    <Dialog.Panel className="w-full max-w-md bg-white rounded-lg p-6">
+                        <Dialog.Title className="text-xl font-bold">Circle Calculator Help</Dialog.Title>
+                        <Dialog.Description className="mt-4 text-gray-600">
+                            This calculator helps you find different measurements of a circle. You can enter any one value:
+                            <ul className="list-disc pl-5 mt-2 space-y-1">
+                                <li>Radius (R)</li>
+                                <li>Diameter (D = 2R)</li>
+                                <li>Circumference (C = 2πR)</li>
+                                <li>Area (A = πR²)</li>
+                            </ul>
+                            The calculator will automatically compute the other values.
+                        </Dialog.Description>
+                        <div className="mt-6">
+                            <button 
+                                onClick={() => setIsModalOpen(false)} 
+                                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </Dialog.Panel>
+                </div>
+            </Dialog>
         </CalculatorLayout>
     );
 };

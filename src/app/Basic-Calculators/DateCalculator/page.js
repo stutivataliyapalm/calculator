@@ -1,6 +1,6 @@
 "use client";
 import { useState } from 'react';
-import { format } from 'date-fns';
+import { format, differenceInDays, differenceInMonths, differenceInYears, addDays, addMonths, addWeeks, addYears, isWeekend } from 'date-fns';
 import BasicLayout from "@/components/BasicLayout";
 import { Info } from "lucide-react";
 import { Dialog } from "@headlessui/react";
@@ -19,40 +19,73 @@ export default function DateCalculator() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
 
-  const calculateDateDifference = async () => {
-    const response = await fetch("/api/date", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        startDate,
-        endDate,
-        includeEndDay,
-        calculateBusinessDays,
-      }),
-    });
-
-    const data = await response.json();
-    if (response.ok) {
-      setResult(data);
+  const calculateDateDifference = () => {
+    try {
+      let start = new Date(startDate);
+      let end = new Date(endDate);
+      
+      if (includeEndDay) {
+        end = addDays(end, 1);
+      }
+      
+      let totalDays = differenceInDays(end, start);
+      
+      // Calculate business days if selected
+      if (calculateBusinessDays) {
+        let businessDays = 0;
+        let currentDate = new Date(start);
+        
+        while (currentDate < end) {
+          if (!isWeekend(currentDate)) {
+            businessDays++;
+          }
+          currentDate = addDays(currentDate, 1);
+        }
+        
+        totalDays = businessDays;
+      }
+      
+      const years = differenceInYears(end, start);
+      const months = differenceInMonths(end, start) % 12;
+      const remainingDays = totalDays - ((years * 365) + (months * 30));
+      const weeks = Math.floor(remainingDays / 7);
+      const days = remainingDays % 7;
+      
+      setResult({
+        years,
+        months,
+        weeks,
+        days,
+        totalDays
+      });
+    } catch (error) {
+      console.error("Error calculating date difference:", error);
     }
   };
 
-  const calculateFutureDate = async () => {
-    const response = await fetch("/api/date", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        startDate,
-        yearsToAdd,
-        monthsToAdd,
-        weeksToAdd,
-        daysToAdd,
-      }),
-    });
-
-    const data = await response.json();
-    if (response.ok) {
-      setFutureDate(new Date(data.futureDate));
+  const calculateFutureDate = () => {
+    try {
+      let result = new Date(startDate);
+      
+      if (yearsToAdd) {
+        result = addYears(result, yearsToAdd);
+      }
+      
+      if (monthsToAdd) {
+        result = addMonths(result, monthsToAdd);
+      }
+      
+      if (weeksToAdd) {
+        result = addWeeks(result, weeksToAdd);
+      }
+      
+      if (daysToAdd) {
+        result = addDays(result, daysToAdd);
+      }
+      
+      setFutureDate(result);
+    } catch (error) {
+      console.error("Error calculating future date:", error);
     }
   };
 
@@ -81,14 +114,14 @@ export default function DateCalculator() {
     <BasicLayout>
       <div className="flex flex-col gap-6 ml-70 p-4">
         {/* Date Difference Calculator */}
-        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-xl">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+        <div className="bg-white p-3 sm:p-4 rounded-lg shadow-lg w-full max-w-sm mr-60">
+          <h2 className="text-lg font-bold text-gray-800 mb-3">
             Date Difference Calculator
             <button
-              onClick={() => openModal('The square root of a number is a value that, when multiplied by itself, gives the original number.')}
+              onClick={() => openModal('Calculate the exact time between two dates, with options to include the end day and calculate only business days.')}
               className="ml-2 text-gray-500 hover:text-gray-700"
             >
-              <Info className="w-5 h-5" />
+              <Info className="w-4 h-4" />
             </button>
           </h2>
 
@@ -100,7 +133,7 @@ export default function DateCalculator() {
               <input
                 type="date"
                 className="w-full text-gray-800 p-2 border rounded-md"
-                value={format(startDate, 'yyyy-MM-dd')}
+                value={startDate instanceof Date ? format(startDate, 'yyyy-MM-dd') : ''}
                 onChange={(e) => setStartDate(new Date(e.target.value))}
               />
             </div>
@@ -111,8 +144,8 @@ export default function DateCalculator() {
               </label>
               <input
                 type="date"
-                className="w-full p-2 text-gray-800  border rounded-md"
-                value={format(endDate, 'yyyy-MM-dd')}
+                className="w-full p-2 text-gray-800 border rounded-md"
+                value={endDate instanceof Date ? format(endDate, 'yyyy-MM-dd') : ''}
                 onChange={(e) => setEndDate(new Date(e.target.value))}
               />
             </div>
@@ -134,7 +167,7 @@ export default function DateCalculator() {
                 type="checkbox"
                 checked={calculateBusinessDays}
                 onChange={(e) => setCalculateBusinessDays(e.target.checked)}
-                className="rounded  text-blue-600"
+                className="rounded text-blue-600"
               />
               <span className="text-sm text-gray-800">Business Days Only</span>
             </label>
@@ -169,14 +202,14 @@ export default function DateCalculator() {
         </div>
 
         {/* Future Date Calculator */}
-        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-xl">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+        <div className="bg-white p-3 sm:p-4 rounded-lg shadow-lg w-full max-w-sm mr-60">
+          <h2 className="text-lg font-bold text-gray-800 mb-3">
             Future Date Calculator
             <button
-              onClick={() => openModal('The cube root of a number is a value that, when used in a multiplication three times, gives the original number.')}
+              onClick={() => openModal('Calculate a future date by adding years, months, weeks, and days to a starting date.')}
               className="ml-2 text-gray-500 hover:text-gray-700"
             >
-              <Info className="w-5 h-5" />
+              <Info className="w-4 h-4" />
             </button>
           </h2>
 
@@ -254,7 +287,7 @@ export default function DateCalculator() {
         </div>
 
         {/* Informational Content */}
-        <div className="bg-white p-6 text-gray-800  rounded-lg shadow-lg w-full max-w-xl">
+        <div className="bg-white p-3 sm:p-4 text-gray-800 rounded-lg shadow-lg w-full max-w-sm mr-60">
           <p>
             An age calculator is a tool or application designed to determine a person's age based on
             their date of birth and the current date. It can be implemented in various forms, such as a

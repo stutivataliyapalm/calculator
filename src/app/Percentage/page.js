@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Info } from "lucide-react";
 import { Dialog } from "@headlessui/react";
-import CalculatorLayout from '@/components/BasicLayout';
+import CalculatorLayout from '@/components/CalculatorLayout';
 
 const PercentageCalculator = () => {
     // State for various calculators

@@ -1,100 +1,84 @@
-"use client";
+'use client';
 import React, { useState } from 'react';
-import { Info } from "lucide-react";
-import { Dialog } from "@headlessui/react";
 import CalculatorLayout from '@/components/BasicLayout';
 
-const RandomPassword = () => {
-    const [password, setPassword] = useState('');
-    const [length, setLength] = useState('');
-    const [isModalOpen, setIsModalOpen] = useState(false);
+const RandomNumber = () => {
+    const [lowerLimit, setLowerLimit] = useState(6); // Default lower limit
+    const [upperLimit, setUpperLimit] = useState(20); // Default upper limit
+    const [randomNumber, setRandomNumber] = useState(null);
+
+    const generateRandomNumber = () => {
+        const number = Math.floor(Math.random() * (upperLimit - lowerLimit + 1)) + lowerLimit; // Generates a number between lowerLimit and upperLimit
+        setRandomNumber(number);
+    };
     
-    const generatePassword = () => {
-        const len = parseInt(length);
-        if (isNaN(len) || len < 6 || len > 35) {
-            alert("Password length must be between 6 and 35 characters.");
-            return;
-        }
-
-        const allChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890@#$%&*';
-        let pass = '';
-        for (let i = 0; i < len; i++) {
-            pass += allChars.charAt(Math.floor(Math.random() * allChars.length));
-        }
-        setPassword(pass);
+    const clearNumber = () => {
+        setLowerLimit('');
+        setUpperLimit('');
+        setRandomNumber('');
     };
-
-    const clearPassword = () => {
-        setPassword('');
-        setLength('');
-    };
-
+    
     return (
         <CalculatorLayout>
-            <div className="w-80 h-screen flex flex-col bg-gray-100 ">
-                <div className="w-80 p-6 bg-white shadow-md rounded-lg">
-                    <div className="flex items-center mb-4">
-                        <h1 className="text-base font-bold">Generate A Random Password</h1>
-                        <button
-                            onClick={() => setIsModalOpen(true)}
-                            className="ml-2 text-red-500 hover:text-red-400"
-                        >
-                            <Info className="w-5 h-5" />
-                        </button>
+            <div className="w-full max-w-sm mr-60 bg-white rounded-lg shadow-md p-3 sm:p-4">
+                <div className="flex items-center justify-between mb-2">
+                    <h1 className="text-base sm:text-lg font-bold text-gray-800">Random Number Generator</h1>
+                </div>
+                
+                <p className="mb-2 text-gray-600 text-xs">Generate random numbers within your specified range.</p>
+                
+                <div className="space-y-4">
+                    <div className="mb-4">
+                        <label htmlFor="lowerLimit" className="block mb-2 font-medium text-gray-700">Lower Limit</label>
+                        <input 
+                            id="lowerLimit"
+                            type="number" 
+                            className="w-full p-3 border rounded-lg outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-blue-500 text-base" 
+                            value={lowerLimit} 
+                            onChange={(e) => setLowerLimit(Number(e.target.value))} 
+                            placeholder="Enter lower limit"
+                        />
                     </div>
-                   
-                    <label htmlFor="length" className="block mb-2">Password Length (6-35):</label>
-                    <input 
-                        id="length"
-                        type="number" 
-                        className="w-64 border rounded-md mb-4 p-2"
-                        value={length} 
-                        onChange={(e) => setLength(e.target.value)} 
-                        placeholder="Enter length (6-35)"
-                    />
-                    <div className="flex space-x-2"> {/* Adjusted space between buttons */}
+                    
+                    <div className="mb-4">
+                        <label htmlFor="upperLimit" className="block mb-2 font-medium text-gray-700">Upper Limit</label>
+                        <input 
+                            id="upperLimit"
+                            type="number" 
+                            className="w-full p-3 border rounded-lg outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-blue-500 text-base"
+                            value={upperLimit} 
+                            onChange={(e) => setUpperLimit(Number(e.target.value))} 
+                            placeholder="Enter upper limit"
+                        />
+                    </div>
+                    
+                    <div className="flex flex-col sm:flex-row gap-4">
                         <button
-                            onClick={generatePassword}
-                            className="flex-1 px-2 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300 ease-in-out text-base"
+                            onClick={generateRandomNumber}
+                            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors"
                         >
-                            Generate
+                            Generate Number
                         </button>
                         <button
-                            onClick={clearPassword}
-                            className="flex-1 px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300 ease-in-out text-base"
+                            onClick={clearNumber}
+                            className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md transition-colors"
                         >
                             Clear
                         </button>
                     </div>
-                    <div className="flex-1 px-4 py-2 mt-4 p-4 bg-gray-50 border rounded-md text-center">
-                        <h1 className="text-lg font-semibold mt-2 p-2 border border-blue-500 rounded-md bg-white">
-                            Your Password is: <span style={{ color: 'blue' }}>{password}</span>
-                        </h1>
-                    </div>
-                    <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)} className="relative z-50">
-                        <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
-                        <div className="fixed inset-0 flex items-center justify-center p-4">
-                            <Dialog.Panel className="bg-white rounded-lg p-6 max-w-sm w-full">
-                                <Dialog.Title className="text-lg font-semibold mb-2">How to Use Password Generator</Dialog.Title>
-                                <ul className="list-disc pl-5 space-y-2">
-                                    <li>Enter a desired password length between 6 and 35 characters.</li>
-                                    <li>Click "Generate Password" to create a random password.</li>
-                                    <li>Use the "Clear" button to reset the inputs to their default values.</li>
-                                </ul>
-                                <button
-                                    onClick={() => setIsModalOpen(false)}
-                                    className="mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md"
-                                >
-                                    Close
-                                </button>
-                            </Dialog.Panel>
+                    
+                    {randomNumber !== null && (
+                        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                            <h2 className="text-lg font-semibold mb-3">Your Random Number is:</h2>
+                            <div className="bg-white p-4 rounded-lg shadow-sm">
+                                <p className="text-2xl font-bold text-blue-600">{randomNumber}</p>
+                            </div>
                         </div>
-                    </Dialog>
+                    )}
                 </div>
-                <br />
             </div>
         </CalculatorLayout>
     );
-}
+};
 
-export default RandomPassword;
+export default RandomNumber;

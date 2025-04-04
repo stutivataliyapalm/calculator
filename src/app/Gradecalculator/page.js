@@ -1,5 +1,5 @@
 'use client';
-import CalculatorLayout from "@/components/BasicLayout";
+import CalculatorLayout from "@/components/CalculatorLayout";
 import { Info } from "lucide-react";
 import { Dialog } from "@headlessui/react";
 import { useState } from 'react';

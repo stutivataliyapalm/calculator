@@ -1,7 +1,6 @@
-import { Geist, Geist_Mono } from "next/font/google";
+// import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Breadcrumbs from "@/components/Breadcrumbs";
-// import CategoriesMenu from "@/components/CategoriesMenu";
+// import Breadcrumbs from "@/components/Breadcrumbs";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -25,9 +24,8 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className="flex flex-col min-h-screen">
         <Navbar />
-        <main className="pt-[4rem]"> 
-          <Breadcrumbs />
-         
+        <Breadcrumbs />
+        <main className="flex-1 w-full px-4 sm:px-6 lg:px-8 pt-28 max-w-7xl mx-auto"> 
           {children}
         </main>
         <Footer/>

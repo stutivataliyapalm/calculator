@@ -1,5 +1,4 @@
 'use client';
-// import BasicCalculator from './BasicCalculator/page';
 import Link from 'next/link';
 
 const categories = [

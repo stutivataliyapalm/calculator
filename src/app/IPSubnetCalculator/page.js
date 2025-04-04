@@ -85,119 +85,164 @@ const IPSubnetCalculator = () => {
 
     return (
         <CalculatorLayout>  
-            <div className="flex flex-col items-center gap-8 p-4 bg-white ml-28 mb-40">
-                <h1 className="text-3xl font-bold ">IP Subnet Calculator</h1>
+            <div className="w-full max-w-sm mr-60 bg-white rounded-lg shadow-md p-3 sm:p-4">
+                <div className="flex items-center justify-between mb-2">
+                    <h1 className="text-base sm:text-lg font-bold text-gray-800">IP Subnet Calculator</h1>
+                    <button
+                        onClick={() => openModal('This calculator helps you work with IP addresses and subnets.')}
+                        className="text-red-500 hover:text-red-400"
+                    >
+                        <Info className="w-4 h-4" />
+                    </button>
+                </div>
+                <p className="mb-2 text-gray-600 text-xs">Calculate subnet details from an IP address and subnet mask.</p>
                 
                 {/* IPv4 Subnet Calculator */}
-                <div className="w-full max-w-xl p-4 ">
-                    <h2 className="text-2xl font-bold mb-4">IPv4 Subnet Calculator
-                        <button
-                            onClick={() => openModal('This calculator helps you determine the network address, broadcast address, and usable IP range for a given IPv4 address and subnet mask.')}
-                            className="ml-2 text-red-500 hover:text-red-700"
-                        >
-                            <Info className="w-5 h-5" />
-                        </button>
-                    </h2>
-                    <div className="mb-4">
-                        <label className="block mb-1">Network Class:</label>
-                        <div className="flex gap-2">
-                            {['Any', 'A', 'B', 'C'].map((cls) => (
-                                <label key={cls} className="flex items-center gap-1">
-                                    <input
-                                        type="radio"
-                                        name="networkClass"
-                                        value={cls}
-                                        checked={ipv4Class === cls}
-                                        onChange={(e) => setIpv4Class(e.target.value)}
-                                    />
-                                    {cls}
-                                </label>
-                            ))}
+                <div className="mb-8">
+                    <h2 className="text-lg font-semibold mb-4">IPv4 Subnet Calculator</h2>
+                    <div className="space-y-4">
+                        <div className="mb-4">
+                            <label className="block mb-2 font-medium text-gray-700">Network Class:</label>
+                            <div className="flex gap-4">
+                                {['Any', 'A', 'B', 'C'].map((cls) => (
+                                    <label key={cls} className="flex items-center gap-2">
+                                        <input
+                                            type="radio"
+                                            name="networkClass"
+                                            value={cls}
+                                            checked={ipv4Class === cls}
+                                            onChange={(e) => setIpv4Class(e.target.value)}
+                                            className="text-blue-500 focus:ring-blue-500"
+                                        />
+                                        {cls}
+                                    </label>
+                                ))}
+                            </div>
                         </div>
+                        <div className="mb-4">
+                            <label className="block mb-2 font-medium text-gray-700">Subnet:</label>
+                            <input
+                                type="text"
+                                className="w-full p-3 border rounded-lg outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-blue-500 text-base"
+                                value={ipv4Subnet}
+                                onChange={(e) => setIpv4Subnet(e.target.value)}
+                                placeholder="e.g. 255.255.255.0"
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block mb-2 font-medium text-gray-700">IP Address:</label>
+                            <input
+                                type="text"
+                                className="w-full p-3 border rounded-lg outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-blue-500 text-base"
+                                value={ipv4Address}
+                                onChange={(e) => setIpv4Address(e.target.value)}
+                                placeholder="e.g. 192.168.1.1"
+                            />
+                        </div>
+                        <div className="flex flex-col sm:flex-row gap-4">
+                            <button 
+                                onClick={handleCalculateIPv4}
+                                className="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition-colors text-base sm:text-lg font-medium"
+                            >
+                                Calculate
+                            </button>
+                            <button 
+                                onClick={handleClearIPv4}
+                                className="flex-1 bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg transition-colors text-base sm:text-lg font-medium"
+                            >
+                                Clear
+                            </button>
+                        </div>
+                        {ipv4Result && (
+                            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                                <h2 className="text-lg font-semibold mb-3">Result:</h2>
+                                <div className="bg-white p-4 rounded-lg shadow-sm">
+                                    <p className="text-blue-600">{ipv4Result}</p>
+                                </div>
+                            </div>
+                        )}
                     </div>
-                    <div className="mb-4">
-                        <label className="block mb-1">Subnet:</label>
-                        <input
-                            type="text"
-                            className="w-full border p-2 rounded"
-                            value={ipv4Subnet}
-                            onChange={(e) => setIpv4Subnet(e.target.value)}
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label className="block mb-1">IP Address:</label>
-                        <input
-                            type="text"
-                            className="w-full border p-2 rounded"
-                            value={ipv4Address}
-                            onChange={(e) => setIpv4Address(e.target.value)}
-                        />
-                    </div>
-                    <div className="flex gap-2 justify-center">
-                        <button className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors" onClick={handleCalculateIPv4}>Calculate</button>
-                        <button className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md transition-colors" onClick={handleClearIPv4}>Clear</button>
-                    </div>
-                    {ipv4Result && <p className="mt-4 text-blue-600">{ipv4Result}</p>}
                 </div>
         
                 {/* IPv6 Subnet Calculator */}
-                <div className="w-full max-w-xl p-4 ">
-                    <h2 className="text-2xl font-bold mb-4">IPv6 Subnet Calculator
-                        <button
-                            onClick={() => openModal('This calculator helps you determine the network address for a given IPv6 address and prefix length.')}
-                            className="ml-2 text-gray-500 hover:text-gray-700"
-                        >
-                            <Info className="w-5 h-5" />
-                        </button>
-                    </h2>
-                    <div className="mb-4">
-                        <label className="block mb-1">Prefix Length:</label>
-                        <input
-                            type="text"
-                            className="w-full border p-2 rounded"
-                            value={ipv6Prefix}
-                            onChange={(e) => setIpv6Prefix(e.target.value)}
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label className="block mb-1">IP Address:</label>
-                        <input
-                            type="text"
-                            className="w-full border p-2 rounded"
-                            value={ipv6Address}
-                            onChange={(e) => setIpv6Address(e.target.value)}
-                        />
-                    </div>
-                    <div className="flex gap-2 justify-center">
-                        <button className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors" onClick={handleCalculateIPv6}>Calculate</button>
-                        <button className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md transition-colors" onClick={handleClearIPv6}>Clear</button>
-                    </div>
-                    {ipv6Result && <p className="mt-4 text-blue-600">{ipv6Result}</p>}
-                </div>
-
-                {/* Modal for Information */}
-                {isModalOpen && (
-                    <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)} className="fixed z-10 inset-0 overflow-y-auto">
-                        <div className="flex items-center justify-center min-h-screen">
-                            <Dialog.Panel className="bg-white p-6 rounded shadow-lg max-w-md">
-                                <Dialog.Title className="text-xl font-bold mb-4">Information</Dialog.Title>
-                                <Dialog.Description className="mb-4">
-                                    {modalMessage}
-                                </Dialog.Description>
-                                <button onClick={() => setIsModalOpen(false)} className="bg-blue-500 text-white px-4 py-2 rounded">
-                                    Close
-                                </button>
-                            </Dialog.Panel>
+                <div>
+                    <h2 className="text-lg font-semibold mb-4">IPv6 Subnet Calculator</h2>
+                    <div className="space-y-4">
+                        <div className="mb-4">
+                            <label className="block mb-2 font-medium text-gray-700">Prefix Length:</label>
+                            <input
+                                type="text"
+                                className="w-full p-3 border rounded-lg outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-blue-500 text-base"
+                                value={ipv6Prefix}
+                                onChange={(e) => setIpv6Prefix(e.target.value)}
+                                placeholder="e.g. /64"
+                            />
                         </div>
-                    </Dialog>
-                )}
+                        <div className="mb-4">
+                            <label className="block mb-2 font-medium text-gray-700">IP Address:</label>
+                            <input
+                                type="text"
+                                className="w-full p-3 border rounded-lg outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-blue-500 text-base"
+                                value={ipv6Address}
+                                onChange={(e) => setIpv6Address(e.target.value)}
+                                placeholder="e.g. 2001:0db8:85a3:0000:0000:8a2e:0370:7334"
+                            />
+                        </div>
+                        <div className="flex flex-col sm:flex-row gap-4">
+                            <button 
+                                onClick={handleCalculateIPv6}
+                                className="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition-colors text-base sm:text-lg font-medium"
+                            >
+                                Calculate
+                            </button>
+                            <button 
+                                onClick={handleClearIPv6}
+                                className="flex-1 bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg transition-colors text-base sm:text-lg font-medium"
+                            >
+                                Clear
+                            </button>
+                        </div>
+                        {ipv6Result && (
+                            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                                <h2 className="text-lg font-semibold mb-3">Result:</h2>
+                                <div className="bg-white p-4 rounded-lg shadow-sm">
+                                    <p className="text-blue-600">{ipv6Result}</p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
+
+            <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+                <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+                <div className="fixed inset-0 flex items-center justify-center p-4">
+                    <Dialog.Panel className="w-full max-w-md bg-white rounded-lg p-6">
+                        <Dialog.Title className="text-xl font-bold">IP Subnet Calculator Help</Dialog.Title>
+                        <Dialog.Description className="mt-4 text-gray-600">
+                            {modalMessage}
+                            <ul className="list-disc pl-5 mt-2 space-y-1">
+                                <li>IPv4 calculator helps you find network address, broadcast address, and usable IP ranges.</li>
+                                <li>IPv6 calculator helps you determine network addresses for IPv6 addresses.</li>
+                                <li>Enter valid IP addresses in the standard format.</li>
+                            </ul>
+                        </Dialog.Description>
+                        <div className="mt-6">
+                            <button 
+                                onClick={() => setIsModalOpen(false)} 
+                                className="w-full bg-blue-500 text-white py-3 px-6 rounded-lg hover:bg-blue-600 transition-colors text-base font-medium"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </Dialog.Panel>
+                </div>
+            </Dialog>
         </CalculatorLayout>
     );
 };
 
 export default IPSubnetCalculator;
-
 
 
 
